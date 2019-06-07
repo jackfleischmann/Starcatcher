@@ -20,7 +20,7 @@ var star = {
         obj._xSpeed=xSpeed;
         obj._ySpeed=ySpeed;
         obj._img = new Image();
-        obj._img.src="images/goldcoin.png";
+        obj._img.src="images/star.png";
         return obj;
     },
 
@@ -88,7 +88,13 @@ window.onload = function() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d"),
         w = canvas.width = 800,
-        h = canvas.height = 500;
+        h = canvas.height = 600;
+        ctx.fillStyle= "rgba(250, 0, 0, .7)";
+        ctx.fillRect(50,50,w-100,h-200);
+        ctx.fillStyle="white";
+        ctx.font="25px Sans-Serif";
+        ctx.fillText("There is one whistle, grab it, and avoid Coach D!",w/10,h/4);
+        ctx.fillText("Obtain the whistle and Stay Alive to Win",w/10,h/2);
 
     //load variables
     var p1x=w/2+100, p1y=h/2, p2x=w/2-100, p2y=h/2;
@@ -99,13 +105,13 @@ window.onload = function() {
     var background = new Image();
     background.src="images/gymbackground.jpg";
     var ship1 = new Image();
-    ship1.src="images/alien.png"
+    ship1.src="images/rayallen.png"
     var ship2 = new Image();
-    ship2.src="images/coolwarrior.png"
+    ship2.src="images/player.png"
 
     // moving stars around the screen and update the players movement
     // our stars are created using a single array with a class of information
-    var starCount=50;
+    var starCount=1;
     var starArray=[];
 
     // Create an array of stars
@@ -117,7 +123,7 @@ window.onload = function() {
     }
 
     //bStar array
-    var bStarCount=3;
+    var bStarCount=25;
     var bStarArray=[];
 
     // Create an array of stars
@@ -244,7 +250,8 @@ window.onload = function() {
         if (gameOn==1) {requestAnimationFrame(main)};
     } //close starsUpdate
 //  scoring functions to place and score stars
-    function scoring(k,wp) {
+   
+function scoring(k,wp) {
         starArray[k]._visible=false;
         if (wp==1) {
             // need to place a small star next to player 1 score
@@ -255,6 +262,15 @@ window.onload = function() {
             p2Score++;
             $("#p2ScoreDisp").text(p2Score);
         }
+        if ((p1Score+p2Score==starCount) & (p1Score>p2Score)) {
+            endGame(2);
+            gameOn=false;
+        }
+        
+       else if ((p1Score+p2Score==starCount) & (p2Score>p1Score)) {
+            endGame(1);
+            gameOn=false;
+        }
     } //close scoring
 
      function lives(k,wp) {
@@ -262,23 +278,20 @@ window.onload = function() {
             p1Lives=p1Lives-1;
             if (p1Lives<=0) {
                 p1Score-=10; 
-                alert("Game Over");
                 gameOn=false;
+                endGame(1);
             }
             $("#p1LivesDisp").text(p1Lives);
             p1x=w/2, p1y=h/2;
             bStarArray[k]._visible=false;
             bStarArray[k]._x=w+900;
         } //close if wp
-    }   // close lives
 
-     function lives(k,wp) {
-        if (wp = 1) {
+        if (wp == 2) {
             p2Lives=p2Lives-1;
             if (p2Lives<=0) {
-                p2Score-=10; 
-                alert("Game Over");
                 gameOn=false;
+                endGame(2);
             }
             $("#p2LivesDisp").text(p2Lives);
             p2x=w/2, p2y=h/2;
@@ -286,6 +299,19 @@ window.onload = function() {
             bStarArray[k]._x=w+900;
         } //close if wp
     }   // close lives
+
+    function endGame(wp) {
+        ctx.fillStyle= "rgba(250,0,0,.4)";
+        ctx.fillRect(50,50,w-100,h-100);
+        ctx.fillStyle="black";
+        ctx.font="30px Sans-Serif";
+        if (wp==2){
+            ctx.fillText("Game over, Player one Wins",w/4,h/2);
+        }
+        if (wp==1){
+            ctx.fillText("Game over, Player two Wins",w/4,h/2);
+        }       
+    }  // close endGame
 
 }                 
                 
